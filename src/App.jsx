@@ -11,14 +11,24 @@ function App() {
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'sans-serif', backgroundColor: '#f9fafb', margin: 0 }}>
         
         {/* ШАПКА САЙТА */}
-        <header style={{ backgroundColor: '#1a2332', color: 'white', padding: '15px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '0.5px' }}>CodeLearn</div>
+        <header style={{ 
+          backgroundColor: '#1a2332', 
+          color: 'white', 
+          padding: '15px 20px', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          flexWrap: 'wrap', 
+          gap: '10px', 
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+        }}>
+          <div style={{ fontSize: '22px', fontWeight: 'bold', letterSpacing: '0.5px' }}>CodeLearn</div>
           
-          <nav style={{ display: 'flex', gap: '25px' }}>
-            <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '16px' }}>Главная</Link>
-            <Link to="/courses" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '16px' }}>Курсы</Link>
-            <Link to="/about" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '16px' }}>О нас</Link>
-            <Link to="/contacts" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '16px' }}>Контакты</Link>
+          <nav style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+            <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>Главная</Link>
+            <Link to="/courses" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>Курсы</Link>
+            <Link to="/about" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>О нас</Link>
+            <Link to="/contacts" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', fontSize: '15px' }}>Контакты</Link>
           </nav>
         </header>
 

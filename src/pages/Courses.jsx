@@ -1,31 +1,55 @@
-function Courses() {
-  const list = [
-    { title: 'Frontend-разработчик', desc: 'С нуля до первых проектов. Изучите верстку, адаптив и основы программирования.', time: '3 месяца' },
-    { title: 'Разработчик на React & Next.js', desc: 'Продвинутый уровень для тех, кто хочет создавать сложные одностраничные системы.', time: '4 месяца' },
-    { title: 'Основы Python', desc: 'Идеальный старт для backend-разработки. Написание ботов, скриптов и работа с базами данных.', time: '2 месяца' },
+import React from 'react';
+
+export default function Courses() {
+  const coursesList = [
+    { title: "Веб-разработчик с нуля", level: "Для новичков", duration: "3 месяца", color: "linear-gradient(135deg, #3b82f6, #1d4ed8)" },
+    { title: "Продвинутый JavaScript", level: "Средний", duration: "2 месяца", color: "linear-gradient(135deg, #eab308, #ca8a04)" },
+    { title: "Разработка на React", level: "Продвинутый", duration: "1.5 месяца", color: "linear-gradient(135deg, #06b6d4, #0891b2)" }
   ];
 
   return (
-    <div style={{ padding: '40px 20px', fontFamily: 'sans-serif' }}>
-      <h1 style={{ textAlign: 'center', fontSize: '32px', color: '#111827', marginBottom: '10px', fontWeight: '700' }}>Наши обучающие направления</h1>
-      <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '40px' }}>Выберите подходящий курс и начните учиться бесплатно</p>
+    <div style={{ padding: '20px 0' }}>
+      <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '30px', textAlign: 'center' }}>Доступные направления</h2>
       
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', maxWidth: '1000px', margin: '0 auto' }}>
-        {list.map((item, index) => (
-          <div key={index} style={{ backgroundColor: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', margin: '0 auto' }}>
+        {coursesList.map((course, index) => (
+          <div key={index} style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '25px',
+            borderRadius: '20px',
+            backgroundColor: 'rgba(30, 41, 59, 0.3)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            flexWrap: 'wrap',
+            gap: '15px'
+          }}>
             <div>
-              <span style={{ fontSize: '12px', backgroundColor: '#e0f2fe', color: '#0369a1', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>{item.time}</span>
-              <h3 style={{ fontSize: '22px', color: '#1a2332', marginTop: '12px', marginBottom: '10px', fontWeight: '700' }}>{item.title}</h3>
-              <p style={{ color: '#4b5563', fontSize: '15px', lineHeight: '1.5', margin: 0 }}>{item.desc}</p>
+              <span style={{ 
+                background: course.color, 
+                color: '#fff', 
+                padding: '4px 10px', 
+                borderRadius: '8px', 
+                fontSize: '12px', 
+                fontWeight: '700' 
+              }}>{course.level}</span>
+              <h3 style={{ margin: '10px 0 5px 0', fontSize: '20px', color: '#fff' }}>{course.title}</h3>
+              <p style={{ margin: 0, color: '#9ca3af', fontSize: '14px' }}>Продолжительность: {course.duration}</p>
             </div>
-            <button style={{ backgroundColor: '#2563eb', color: 'white', border: 'none', padding: '10px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '20px', fontWeight: '600', width: '100%' }}>
-              Записаться
-            </button>
+            <button style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: '#fff',
+              padding: '12px 24px',
+              borderRadius: '10px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}>Подробнее</button>
           </div>
         ))}
       </div>
     </div>
   );
 }
-
-export default Courses;

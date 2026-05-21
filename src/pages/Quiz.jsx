@@ -1,123 +1,187 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 
-function Quiz() {
-  // Список вопросов для теста
-  const questions = [
-    {
-      questionText: 'Какой язык отвечает за структуру и скелет веб-страницы?',
-      answerOptions: [
-        { answerText: 'CSS', isCorrect: false },
-        { answerText: 'HTML', isCorrect: true },
-        { answerText: 'JavaScript', isCorrect: false },
-        { answerText: 'Python', isCorrect: false },
-      ],
-    },
-    {
-      questionText: 'Что делает язык JavaScript на сайте?',
-      answerOptions: [
-        { answerText: 'Задаёт цвета и шрифты', isCorrect: false },
-        { answerText: 'Создает структуру документа', isCorrect: false },
-        { answerText: 'Оживляет элементы и обрабатывает клики', isCorrect: true },
-        { answerText: 'Отвечает за дизайн карточек', isCorrect: false },
-      ],
-    },
-    {
-      questionText: 'Что такое React?',
-      answerOptions: [
-        { answerText: 'Популярная JavaScript-библиотека для создания интерфейсов', isCorrect: true },
-        { answerText: 'Система управления базами данных', isCorrect: false },
-        { answerText: 'Язык программирования для серверов', isCorrect: false },
-        { answerText: 'Программа для редактирования фото', isCorrect: false },
-      ],
-    },
-  ];
+const questions = [
+  {
+    question: "Какой язык отвечает за структуру и скелет веб-страницы?",
+    options: ["CSS", "HTML", "JavaScript", "Python"],
+    answer: "HTML"
+  },
+  {
+    question: "Какое свойство в CSS меняет цвет текста?",
+    options: ["background-color", "font-size", "color", "text-align"],
+    answer: "color"
+  },
+  {
+    question: "Какое ключевое слово используется для создания переменной в современном JavaScript?",
+    options: ["var", "let", "make", "create"],
+    answer: "let"
+  }
+];
 
-  // Состояния для отслеживания прогресса тестов
+export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
-  const [showScore, setShowScore] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  // Функция обработки клика по ответу
-  const handleAnswerButtonClick = (isCorrect) => {
-    if (isCorrect) {
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+  };
+
+  const handleNextClick = () => {
+    if (selectedOption === questions[currentQuestion].answer) {
       setScore(score + 1);
     }
-
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
+    
+    setSelectedOption(null);
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
     } else {
-      setShowScore(true);
+      setShowResult(true);
     }
   };
 
-  // Функция для перезапуска теста
-  const resetQuiz = () => {
+  const restartQuiz = () => {
     setCurrentQuestion(0);
     setScore(0);
-    setShowScore(false);
+    setShowResult(false);
+    setSelectedOption(null);
   };
 
+  // Вычисляем процент прохождения для анимации прогресс-бара
+  const progressPercent = ((currentQuestion) / questions.length) * 100;
+
   return (
-    <div style={{ maxWidth: '600px', margin: '40px auto', padding: '30px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px rgba(0,0,0,0.02)', fontFamily: 'sans-serif' }}>
-      
-      {showScore ? (
-        /* ЭКРАН РЕЗУЛЬТАТОВ */
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '10px' }}>Тест завершен! 🎉</h2>
-          <p style={{ fontSize: '18px', color: '#4b5563', marginBottom: '30px' }}>
-            Вы правильно ответили на <strong>{score}</strong> из {questions.length} вопросов.
+    <div style={{
+      maxWidth: '600px',
+      margin: '40px auto',
+      padding: '40px',
+      borderRadius: '24px',
+      backgroundColor: 'rgba(30, 41, 59, 0.2)',
+      backdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255, 255, 255, 0.04)',
+      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+    }}>
+      <style>{`
+        @keyframes popIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .quiz-anim {
+          animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .option-btn {
+          text-align: left;
+          padding: '16px 20px';
+          border-radius: '14px';
+          font-size: '15px';
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+          border-color: rgba(99, 102, 241, 0.4) !important;
+          background-color: rgba(99, 102, 241, 0.08) !important;
+          transform: translateX(4px);
+          color: #fff !important;
+        }
+      `}</style>
+
+      {showResult ? (
+        <div style={{ textAlign: 'center' }} className="quiz-anim">
+          <div style={{ fontSize: '64px', marginBottom: '20px', filter: 'drop-shadow(0 10px 20px rgba(234,179,8,0.3))' }}>🏆</div>
+          <h2 style={{ fontSize: '32px', fontWeight: '900', marginBottom: '10px', background: 'linear-gradient(135deg, #34d399, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Тест завершен!</h2>
+          <p style={{ fontSize: '18px', color: '#94a3b8', marginBottom: '35px' }}>
+            Ваш результат: <strong style={{ color: '#fff', fontSize: '24px' }}>{score}</strong> из {questions.length}
           </p>
-          
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-            <button onClick={resetQuiz} style={{ backgroundColor: '#f3f4f6', color: '#1f2937', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>
-              Пройти заново
-            </button>
-            <Link to="/courses" style={{ backgroundColor: '#2563eb', color: 'white', textDecoration: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: '600', textAlign: 'center' }}>
-              Выбрать курс
-            </Link>
-          </div>
+          <button onClick={restartQuiz} style={{
+            background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+            color: 'white',
+            border: 'none',
+            padding: '16px 32px',
+            borderRadius: '14px',
+            fontSize: '16px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            boxShadow: '0 6px 20px rgba(99, 102, 241, 0.4)',
+            width: '100%'
+          }}>Попробовать снова</button>
         </div>
       ) : (
-        /* ЭКРАН С ВОПРОСАМИ */
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #e5e7eb', paddingBottom: '15px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: '#2563eb', backgroundColor: '#eff6ff', padding: '4px 10px', borderRadius: '6px' }}>
+        <div className="quiz-anim" key={currentQuestion}>
+          {/* Верхняя панель с прогрессом */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+            <span style={{ 
+              backgroundColor: 'rgba(99, 102, 241, 0.12)', 
+              color: '#818cf8', 
+              padding: '6px 14px', 
+              borderRadius: '20px', 
+              fontSize: '13px', 
+              fontWeight: '700' 
+            }}>
               Вопрос {currentQuestion + 1} из {questions.length}
             </span>
           </div>
-          
-          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111827', marginBottom: '25px', lineHeight: '1.4' }}>
-            {questions[currentQuestion].questionText}
-          </h2>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {questions[currentQuestion].answerOptions.map((answerOption, index) => (
-              <button
-                key={index}
-                onClick={() => handleAnswerButtonClick(answerOption.isCorrect)}
-                style={{
-                  textAlign: 'left',
-                  padding: '14px 20px',
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '10px',
-                  fontSize: '16px',
-                  color: '#374151',
-                  cursor: 'pointer',
-                  fontWeight: '500',
-                  transition: 'background-color 0.2s',
-                }}
-              >
-                {answerOption.answerText}
-              </button>
-            ))}
+
+          {/* Интерактивная линия прогресса */}
+          <div style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '10px', marginBottom: '30px', overflow: 'hidden' }}>
+            <div style={{ width: `${progressPercent}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #a855f7)', transition: 'width 0.4s ease' }}></div>
           </div>
+
+          <h3 style={{ fontSize: '24px', fontWeight: '800', lineHeight: '1.4', marginBottom: '30px', color: '#ffffff', letterSpacing: '-0.5px' }}>
+            {questions[currentQuestion].question}
+          </h3>
+
+          {/* Варианты ответов */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '35px' }}>
+            {questions[currentQuestion].options.map((option, index) => {
+              const isSelected = selectedOption === option;
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleOptionClick(option)}
+                  className="option-btn"
+                  style={{
+                    textAlign: 'left',
+                    padding: '18px 22px',
+                    borderRadius: '14px',
+                    border: isSelected ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.05)',
+                    backgroundColor: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(15, 23, 42, 0.3)',
+                    color: isSelected ? '#a5b4fc' : '#94a3b8',
+                    fontSize: '15px',
+                    fontWeight: isSelected ? '700' : '500',
+                    boxShadow: isSelected ? '0 0 20px rgba(99, 102, 241, 0.15)' : 'none',
+                    outline: 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Кнопка Далее */}
+          <button
+            onClick={handleNextClick}
+            disabled={!selectedOption}
+            style={{
+              width: '100%',
+              padding: '16px',
+              borderRadius: '14px',
+              border: 'none',
+              backgroundColor: selectedOption ? '#6366f1' : 'rgba(255, 255, 255, 0.04)',
+              color: selectedOption ? 'white' : '#4b5563',
+              fontSize: '16px',
+              fontWeight: '700',
+              cursor: selectedOption ? 'pointer' : 'not-allowed',
+              boxShadow: selectedOption ? '0 6px 20px rgba(99, 102, 241, 0.3)' : 'none',
+              transition: 'all 0.3s'
+            }}
+          >
+            {currentQuestion + 1 === questions.length ? "Посмотреть результат" : "Следующий вопрос"}
+          </button>
         </div>
       )}
     </div>
   );
 }
-
-export default Quiz;

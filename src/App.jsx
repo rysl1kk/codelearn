@@ -40,17 +40,21 @@ function App() {
         }
       `}</style>
 
+      {/* Контейнер жестко растянут на всю ширину без внешних полей */}
       <div style={{ 
         display: 'flex', 
         flexDirection: 'column', 
         minHeight: '100vh', 
-        fontFamily: '"Inter", "Segoe UI", sans-serif',
+        width: '100%',
         backgroundColor: '#070a13', 
         color: '#f3f4f6',
-        backgroundImage: 'radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 600px), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.12), transparent 600px)',
-        overflowX: 'hidden'
+        backgroundImage: 'radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 800px), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.12), transparent 800px)',
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box'
       }}>
         
+        {/* Шапка теперь идет от левого до правого края монитора */}
         <header style={{ 
           backdropFilter: 'blur(16px)',
           backgroundColor: 'rgba(7, 10, 19, 0.75)', 
@@ -62,8 +66,8 @@ function App() {
           position: 'sticky',
           top: 0,
           zIndex: 1000,
-          flexWrap: 'wrap',
-          gap: '15px',
+          width: '100%',
+          boxSizing: 'border-box',
           animation: 'fadeIn 0.6s ease-out'
         }}>
           <div style={{ 
@@ -77,7 +81,7 @@ function App() {
             CodeLearn_
           </div>
           
-          <nav style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+          <nav style={{ display: 'flex', gap: '30px' }}>
             <Link to="/" className="nav-link">Главная</Link>
             <Link to="/courses" className="nav-link">Курсы</Link>
             <Link to="/about" className="nav-link">О нас</Link>
@@ -85,13 +89,11 @@ function App() {
           </nav>
         </header>
 
-        {/* НАСТРОЕНО НА ПОЛНЫЙ ЭКРАН */}
+        {/* Рабочая зона на весь экран */}
         <main style={{ 
           flexGrow: 1, 
-          padding: '40px 40px', 
-          maxWidth: '100%', 
+          padding: '40px', 
           width: '100%', 
-          margin: '0 auto',
           boxSizing: 'border-box'
         }}>
           <Routes>
@@ -103,14 +105,16 @@ function App() {
           </Routes>
         </main>
 
+        {/* Футер на всю ширину */}
         <footer style={{ 
           backgroundColor: '#04060b', 
-          padding: '30px 20px', 
+          padding: '30px 40px', 
           textAlign: 'center', 
           fontSize: '14px',
           color: '#4b5563',
           borderTop: '1px solid rgba(255, 255, 255, 0.03)',
-          marginTop: 'auto'
+          width: '100%',
+          boxSizing: 'border-box'
         }}>
           <p style={{ margin: 0 }}>© 2026 CodeLearn. Сделано со стилем.</p>
         </footer>

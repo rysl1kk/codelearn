@@ -1,180 +1,210 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const PILLARS = [
-  { icon: '⚡', title: 'Мгновенная проверка', desc: 'Каждое знание тестируется сразу — никаких домашних заданий через неделю.' },
-  { icon: '🎯', title: 'Практика с первого дня', desc: 'Квизы построены на реальных примерах кода, а не абстрактной теории.' },
-  { icon: '📈', title: 'Прогресс в реальном времени', desc: 'Видишь свой результат сразу после каждого ответа.' },
-  { icon: '🌐', title: 'Доступно всем', desc: 'Никаких барьеров — просто открой браузер и начни учиться.' },
-];
+export default function Contacts() {
+  const [focused, setFocused] = useState(null);
+  const [sent, setSent] = useState(false);
 
-export default function About() {
   return (
     <div style={{ width: '100%', padding: '80px 48px 100px', boxSizing: 'border-box' }}>
       <style>{`
-        @keyframes aboutUp {
+        @keyframes contactUp {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .about-hero {
-          display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-          max-width: 1200px; margin: 0 auto 100px;
-          animation: aboutUp 0.7s ease both;
+        .contact-grid {
+          display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px;
+          max-width: 1100px; margin: 0 auto;
+          animation: contactUp 0.7s ease both;
         }
         @media (max-width: 800px) {
-          .about-hero { grid-template-columns: 1fr; gap: 40px; }
+          .contact-grid { grid-template-columns: 1fr; }
         }
-        .about-label {
+        .contact-label {
           font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em;
           color: var(--text-dim); text-transform: uppercase; margin-bottom: 20px;
         }
-        .about-title {
-          font-size: clamp(36px, 5vw, 64px); font-weight: 900; line-height: 1.1;
-          margin-bottom: 28px;
+        .contact-title {
+          font-size: clamp(32px, 4vw, 52px); font-weight: 900; line-height: 1.1; margin-bottom: 28px;
         }
-        .about-body {
-          color: var(--text-mid); font-size: 17px; line-height: 1.75; margin-bottom: 20px;
-        }
-        .terminal-box {
-          background: rgba(5, 8, 20, 0.8);
-          border: 1px solid var(--border-dim);
-          border-radius: 16px;
-          overflow: hidden;
-          font-family: var(--font-mono);
-        }
-        .terminal-bar {
-          padding: 12px 16px;
-          background: rgba(124,58,237,0.08);
-          border-bottom: 1px solid var(--border-dim);
-          display: flex; align-items: center; gap: 8px;
-        }
-        .t-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .terminal-body { padding: 24px 20px; }
-        .t-line { font-size: 13px; line-height: 2; }
-        .t-comment { color: #4b5563; }
-        .t-key { color: #67e8f9; }
-        .t-val { color: #c4b5fd; }
-        .t-str { color: #86efac; }
-        .t-num { color: #fb923c; }
-
-        .pillars-grid {
-          display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
-          max-width: 1200px; margin: 0 auto;
-        }
-        @media (max-width: 700px) {
-          .pillars-grid { grid-template-columns: 1fr; }
-        }
-        .pillar-card {
+        .contact-info-card {
           background: var(--bg-glass);
           border: 1px solid var(--border-dim);
-          border-radius: 18px;
-          padding: 32px 28px;
+          border-radius: 16px;
+          padding: 24px 22px;
+          display: flex; align-items: center; gap: 16px;
+          margin-bottom: 16px;
           backdrop-filter: blur(12px);
-          display: flex; gap: 20px; align-items: flex-start;
-          transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-          animation: aboutUp 0.6s ease both;
+          transition: all 0.3s;
+          text-decoration: none;
         }
-        .pillar-card:hover {
-          transform: translateY(-6px);
+        .contact-info-card:hover {
           border-color: var(--border-glow);
+          transform: translateX(6px);
           background: rgba(124,58,237,0.07);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        .pillar-icon {
-          font-size: 28px; flex-shrink: 0;
-          width: 52px; height: 52px;
-          border-radius: 12px;
+        .contact-info-icon {
+          width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center; font-size: 20px;
           background: rgba(124,58,237,0.12);
-          display: flex; align-items: center; justify-content: center;
           border: 1px solid var(--border-dim);
         }
-        .pillar-title { font-size: 17px; font-weight: 800; color: #f0f4ff; margin-bottom: 8px; }
-        .pillar-desc { font-size: 14px; color: var(--text-mid); line-height: 1.65; }
+        .contact-info-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 4px; letter-spacing: 0.06em; }
+        .contact-info-val { font-family: var(--font-mono); font-size: 14px; color: #c4b5fd; font-weight: 600; }
 
-        .section-divider {
-          width: 100%; max-width: 1200px; margin: 0 auto 60px;
-          display: flex; align-items: center; gap: 20px;
+        .form-box {
+          background: var(--bg-glass);
+          border: 1px solid var(--border-dim);
+          border-radius: 24px;
+          padding: 44px 40px;
+          backdrop-filter: blur(16px);
         }
-        .divider-line { flex: 1; height: 1px; background: var(--border-dim); }
-        .divider-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.12em; white-space: nowrap; }
+        .field-wrap { margin-bottom: 24px; }
+        .field-label {
+          display: block;
+          font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+          color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase;
+        }
+        .field-input {
+          width: 100%;
+          background: rgba(5, 8, 20, 0.6);
+          border: 1px solid var(--border-dim);
+          border-radius: 12px;
+          padding: 16px 18px;
+          color: #f0f4ff;
+          font-family: var(--font-display); font-size: 15px;
+          outline: none;
+          transition: all 0.3s;
+          box-sizing: border-box;
+        }
+        .field-input:focus {
+          border-color: var(--neon-primary);
+          box-shadow: 0 0 0 3px rgba(124,58,237,0.12), 0 0 20px rgba(124,58,237,0.15);
+          background: rgba(5, 8, 20, 0.8);
+        }
+        .field-input::placeholder { color: var(--text-dim); }
+        .submit-btn {
+          width: 100%;
+          background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+          color: #fff; border: none;
+          padding: 18px; border-radius: 14px;
+          font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+          letter-spacing: 0.05em; cursor: pointer;
+          box-shadow: 0 0 30px rgba(124,58,237,0.3);
+          transition: all 0.3s;
+          position: relative; overflow: hidden;
+        }
+        .submit-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 0 50px rgba(124,58,237,0.55);
+        }
+        .submit-btn:active { transform: translateY(0); }
+        .success-box {
+          text-align: center; padding: 40px 20px;
+          animation: contactUp 0.5s ease both;
+        }
       `}</style>
 
-      {/* HERO */}
-      <div className="about-hero">
+      <div style={{ textAlign: 'center', marginBottom: '70px', animation: 'contactUp 0.6s ease both' }}>
+        <p className="contact-label">// Связаться</p>
+        <h2 className="contact-title">
+          <span style={{ background: 'linear-gradient(135deg, #f0f4ff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Связаться
+          </span>
+          {' '}
+          <span style={{ background: 'linear-gradient(135deg, #c4b5fd, #67e8f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            со мной
+          </span>
+        </h2>
+      </div>
+
+      <div className="contact-grid">
+        {/* Левая колонка */}
         <div>
-          <p className="about-label">// О проекте</p>
-          <h2 className="about-title">
-            <span style={{ background: 'linear-gradient(135deg, #f0f4ff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              О проекте
-            </span>
-            <br />
-            <span style={{ background: 'linear-gradient(135deg, #c4b5fd, #67e8f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              CodeLearn
-            </span>
-          </h2>
-          <p className="about-body">
-            <strong style={{ color: '#c4b5fd' }}>CodeLearn</strong> — это интерактивная образовательная среда, созданная для того, чтобы сделать первый шаг в веб-разработку максимально понятным, увлекательным и доступным.
+          <p style={{ color: 'var(--text-mid)', fontSize: '16px', lineHeight: 1.7, marginBottom: '36px' }}>
+            Есть вопрос, предложение или хочешь рассказать о прогрессе — пиши, отвечу быстро.
           </p>
-          <p className="about-body" style={{ marginBottom: 0 }}>
-            Мы верим, что сухая теория без практики не работает. Именно поэтому наше обучение построено вокруг мгновенной проверки знаний, интерактивных квизов и закрепления материала на реальных примерах кода. Начните свой путь в IT сегодня!
-          </p>
-        </div>
 
-        {/* Терминал */}
-        <div className="terminal-box">
-          <div className="terminal-bar">
-            <div className="t-dot" style={{ background: '#ef4444' }} />
-            <div className="t-dot" style={{ background: '#eab308' }} />
-            <div className="t-dot" style={{ background: '#22c55e' }} />
-            <span style={{ marginLeft: 8, fontSize: 12, color: 'var(--text-dim)' }}>codelearn.config.js</span>
-          </div>
-          <div className="terminal-body">
-            <div className="t-line t-comment">// Наша философия</div>
-            <div className="t-line">
-              <span className="t-key">const</span> <span style={{ color: '#f0f4ff' }}>CodeLearn</span> = {'{'}
-            </div>
-            <div className="t-line" style={{ paddingLeft: 20 }}>
-              <span className="t-key">mission:</span> <span className="t-str">'Сделать IT доступным'</span>,
-            </div>
-            <div className="t-line" style={{ paddingLeft: 20 }}>
-              <span className="t-key">approach:</span> <span className="t-str">'Практика с первого дня'</span>,
-            </div>
-            <div className="t-line" style={{ paddingLeft: 20 }}>
-              <span className="t-key">courses:</span> <span className="t-num">3</span>,
-            </div>
-            <div className="t-line" style={{ paddingLeft: 20 }}>
-              <span className="t-key">quizzes:</span> <span className="t-num">120</span>,
-            </div>
-            <div className="t-line" style={{ paddingLeft: 20 }}>
-              <span className="t-key">price:</span> <span className="t-num">0</span>,
-            </div>
-            <div className="t-line">{'}'}</div>
-            <div className="t-line" style={{ marginTop: 8 }}>
-              <span className="t-comment">// Результат:</span>
-            </div>
-            <div className="t-line">
-              <span style={{ color: '#86efac' }}>✓</span> <span style={{ color: '#c4b5fd' }}>Студент</span> → <span style={{ color: '#67e8f9' }}>Разработчик</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* PILLARS */}
-      <div className="section-divider">
-        <div className="divider-line" />
-        <span className="divider-label">// Принципы обучения</span>
-        <div className="divider-line" />
-      </div>
-
-      <div className="pillars-grid">
-        {PILLARS.map((p, i) => (
-          <div className="pillar-card" key={i} style={{ animationDelay: `${i * 0.1}s` }}>
-            <div className="pillar-icon">{p.icon}</div>
+          <a href="mailto:andamasovruslan444@gmail.com" className="contact-info-card">
+            <div className="contact-info-icon">📧</div>
             <div>
-              <div className="pillar-title">{p.title}</div>
-              <div className="pillar-desc">{p.desc}</div>
+              <div className="contact-info-meta">Email</div>
+              <div className="contact-info-val">andamasovruslan444@gmail.com</div>
             </div>
+          </a>
+
+          <a href="https://github.com/rysl1kk" target="_blank" rel="noreferrer" className="contact-info-card">
+            <div className="contact-info-icon">💻</div>
+            <div>
+              <div className="contact-info-meta">GitHub</div>
+              <div className="contact-info-val">github.com/rysl1kk</div>
+            </div>
+          </a>
+
+          {/* Декоративная сетка */}
+          <div style={{
+            marginTop: '40px',
+            padding: '24px',
+            border: '1px solid var(--border-dim)',
+            borderRadius: '16px',
+            background: 'var(--bg-glass)',
+            backdropFilter: 'blur(12px)',
+            fontFamily: 'var(--font-mono)',
+          }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-dim)', letterSpacing: '0.1em', marginBottom: '16px' }}>// СТАТУС</div>
+            {[
+              { label: 'Открыт к общению', val: 'true', color: '#86efac' },
+              { label: 'Время ответа', val: '< 24h', color: '#67e8f9' },
+              { label: 'Язык', val: 'RU / EN', color: '#c4b5fd' },
+            ].map((row, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '8px 0', borderBottom: i < 2 ? '1px solid var(--border-dim)' : 'none' }}>
+                <span style={{ color: 'var(--text-dim)' }}>{row.label}</span>
+                <span style={{ color: row.color, fontWeight: 700 }}>{row.val}</span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Форма */}
+        <div className="form-box">
+          {sent ? (
+            <div className="success-box">
+              <div style={{ fontSize: '56px', marginBottom: '20px' }}>✅</div>
+              <h3 style={{ fontSize: '24px', fontWeight: 900, background: 'linear-gradient(135deg, #86efac, #22c55e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '12px' }}>
+                Сообщение отправлено!
+              </h3>
+              <p style={{ color: 'var(--text-mid)', marginBottom: '28px' }}>Отвечу в течение 24 часов.</p>
+              <button onClick={() => setSent(false)} style={{
+                background: 'transparent', border: '1px solid var(--border-glow)',
+                color: 'var(--text-mid)', padding: '12px 28px', borderRadius: '10px',
+                fontFamily: 'var(--font-mono)', fontSize: '13px', cursor: 'pointer',
+                transition: 'all 0.3s',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#c4b5fd'; e.currentTarget.style.borderColor = '#c4b5fd'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-mid)'; e.currentTarget.style.borderColor = 'var(--border-glow)'; }}
+              >
+                Написать ещё
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="field-wrap">
+                <label className="field-label">Ваше имя</label>
+                <input type="text" className="field-input" placeholder="Иван Иванов" />
+              </div>
+              <div className="field-wrap">
+                <label className="field-label">Email</label>
+                <input type="email" className="field-input" placeholder="example@mail.com" />
+              </div>
+              <div className="field-wrap">
+                <label className="field-label">Сообщение</label>
+                <textarea rows="5" className="field-input" placeholder="Ваш текст..." style={{ fontFamily: 'var(--font-display)', resize: 'vertical' }} />
+              </div>
+              <button className="submit-btn" onClick={() => setSent(true)}>
+                Отправить сообщение →
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

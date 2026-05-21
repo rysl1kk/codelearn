@@ -18,24 +18,29 @@ const questions = [
   }
 ];
 
+const OPTION_LETTERS = ['A', 'B', 'C', 'D'];
+
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [answered, setAnswered] = useState(false);
 
   const handleOptionClick = (option) => {
+    if (answered) return;
     setSelectedOption(option);
+    setAnswered(true);
+    if (option === questions[currentQuestion].answer) {
+      setScore(s => s + 1);
+    }
   };
 
   const handleNextClick = () => {
-    if (selectedOption === questions[currentQuestion].answer) {
-      setScore(score + 1);
-    }
-    
     setSelectedOption(null);
+    setAnswered(false);
     if (currentQuestion + 1 < questions.length) {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion(q => q + 1);
     } else {
       setShowResult(true);
     }
@@ -46,132 +51,244 @@ export default function Quiz() {
     setScore(0);
     setShowResult(false);
     setSelectedOption(null);
+    setAnswered(false);
   };
 
   const progressPercent = (currentQuestion / questions.length) * 100;
+  const isCorrect = answered && selectedOption === questions[currentQuestion]?.answer;
+
+  const getResultData = () => {
+    if (score === questions.length) return { emoji: '🏆', label: 'Отлично!', color: 'linear-gradient(135deg, #fbbf24, #f59e0b)', msg: 'Идеальный результат. Ты готов к следующему уровню!' };
+    if (score >= questions.length / 2) return { emoji: '🎯', label: 'Хорошо!', color: 'linear-gradient(135deg, #34d399, #059669)', msg: 'Неплохой результат! Повтори материал и попробуй снова.' };
+    return { emoji: '📚', label: 'Нужно повторить', color: 'linear-gradient(135deg, #60a5fa, #3b82f6)', msg: 'Не сдавайся — изучи материал и попробуй ещё раз!' };
+  };
 
   return (
-    <div style={{
-      maxWidth: '600px',
-      margin: '40px auto',
-      padding: '40px',
-      borderRadius: '24px',
-      backgroundColor: 'rgba(30, 41, 59, 0.2)',
-      backdropFilter: 'blur(16px)',
-      border: '1px solid rgba(255, 255, 255, 0.04)',
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-    }}>
+    <div style={{ width: '100%', padding: '80px 48px 100px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <style>{`
-        @keyframes popIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
+        @keyframes quizUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .quiz-anim {
-          animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        @keyframes correctFlash {
+          0%   { box-shadow: 0 0 0 rgba(16,185,129,0); }
+          50%  { box-shadow: 0 0 30px rgba(16,185,129,0.4); }
+          100% { box-shadow: 0 0 10px rgba(16,185,129,0.15); }
         }
-        .option-btn {
-          text-align: left;
-          padding: 18px 22px;
-          border-radius: 14px;
-          font-size: 15px;
-          cursor: pointer;
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes wrongFlash {
+          0%   { box-shadow: 0 0 0 rgba(239,68,68,0); }
+          50%  { box-shadow: 0 0 30px rgba(239,68,68,0.4); }
+          100% { box-shadow: 0 0 10px rgba(239,68,68,0.1); }
         }
-        .option-btn:hover:not(:disabled) {
-          border-color: rgba(99, 102, 241, 0.4) !important;
-          background-color: rgba(99, 102, 241, 0.08) !important;
-          transform: translateX(4px);
-          color: #fff !important;
+        .quiz-shell {
+          width: 100%; max-width: 680px;
+          background: var(--bg-glass);
+          border: 1px solid var(--border-dim);
+          border-radius: 28px;
+          padding: 48px 44px;
+          backdrop-filter: blur(20px);
+          box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+          animation: quizUp 0.6s cubic-bezier(0.16,1,0.3,1);
         }
+        .quiz-progress-track {
+          width: 100%; height: 5px;
+          background: rgba(255,255,255,0.04);
+          border-radius: 10px; overflow: hidden;
+          margin-bottom: 36px;
+        }
+        .quiz-progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+          border-radius: 10px;
+          transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+          box-shadow: 0 0 10px rgba(124,58,237,0.5);
+        }
+        .quiz-q-num {
+          font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em;
+          color: var(--text-dim); text-transform: uppercase; margin-bottom: 20px;
+          display: flex; align-items: center; gap: 12px;
+        }
+        .quiz-q-num-badge {
+          background: rgba(124,58,237,0.12);
+          border: 1px solid var(--border-dim);
+          color: #c4b5fd;
+          padding: 4px 14px; border-radius: 20px;
+          font-size: 12px; font-weight: 700;
+        }
+        .quiz-question {
+          font-size: clamp(20px, 3vw, 26px); font-weight: 800; line-height: 1.4;
+          color: #f0f4ff; margin-bottom: 36px; letter-spacing: -0.3px;
+        }
+        .option-row {
+          width: 100%; display: flex; align-items: center; gap: 16px;
+          padding: 18px 20px; border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(5,8,20,0.4);
+          cursor: pointer; text-align: left;
+          transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+          font-size: 15px; font-weight: 500; color: var(--text-mid);
+          margin-bottom: 12px;
+        }
+        .option-row:hover:not(.opt-answered) {
+          border-color: rgba(124,58,237,0.35);
+          background: rgba(124,58,237,0.07);
+          color: #f0f4ff; transform: translateX(4px);
+        }
+        .option-letter {
+          width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center;
+          font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.06);
+          transition: all 0.25s;
+        }
+        .opt-selected { border-color: rgba(124,58,237,0.5); background: rgba(124,58,237,0.1); color: #c4b5fd; }
+        .opt-correct  { border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.08); color: #86efac; animation: correctFlash 0.6s ease; }
+        .opt-wrong    { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.06); color: #fca5a5; animation: wrongFlash 0.6s ease; }
+        .opt-answered { cursor: default; }
+
+        .feedback-bar {
+          display: flex; align-items: center; gap: 12px;
+          padding: 14px 18px; border-radius: 12px;
+          font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+          margin-bottom: 24px;
+          animation: quizUp 0.4s ease;
+        }
+        .next-btn {
+          width: 100%; padding: 18px; border-radius: 14px; border: none;
+          background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+          color: #fff; font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+          letter-spacing: 0.04em; cursor: pointer;
+          box-shadow: 0 0 30px rgba(124,58,237,0.35);
+          transition: all 0.3s;
+        }
+        .next-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,58,237,0.55); }
+        .next-btn:disabled {
+          background: rgba(255,255,255,0.04);
+          color: var(--text-dim);
+          cursor: not-allowed;
+          box-shadow: none;
+          transform: none;
+        }
+        .result-emoji { font-size: 72px; margin-bottom: 24px; display: block; filter: drop-shadow(0 10px 30px rgba(251,191,36,0.3)); }
+        .result-score {
+          font-size: 64px; font-weight: 900; font-family: var(--font-mono);
+          background: linear-gradient(135deg, #c4b5fd, #67e8f9);
+          WebkitBackgroundClip: text; WebkitTextFillColor: transparent;
+          background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .restart-btn {
+          width: 100%; padding: 18px; border-radius: 14px; border: none;
+          background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+          color: #fff; font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+          cursor: pointer; box-shadow: 0 0 30px rgba(124,58,237,0.35);
+          transition: all 0.3s; margin-top: 32px;
+        }
+        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,58,237,0.55); }
       `}</style>
 
-      {showResult ? (
-        <div style={{ textAlign: 'center' }} className="quiz-anim">
-          <div style={{ fontSize: '64px', marginBottom: '20px', filter: 'drop-shadow(0 10px 20px rgba(234,179,8,0.3))' }}>🏆</div>
-          <h2 style={{ fontSize: '32px', fontWeight: '900', marginBottom: '10px', background: 'linear-gradient(135deg, #34d399, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Тест завершен!</h2>
-          <p style={{ fontSize: '18px', color: '#94a3b8', marginBottom: '35px' }}>
-            Ваш результат: <strong style={{ color: '#fff', fontSize: '24px' }}>{score}</strong> из {questions.length}
-          </p>
-          <button onClick={restartQuiz} style={{
-            background: 'linear-gradient(135deg, #6366f1, #a855f7)',
-            color: 'white',
-            border: 'none',
-            padding: '16px 32px',
-            borderRadius: '14px',
-            fontSize: '16px',
-            fontWeight: '700',
-            cursor: 'pointer',
-            boxShadow: '0 6px 20px rgba(99, 102, 241, 0.4)',
-            width: '100%'
-          }}>Попробовать снова</button>
-        </div>
-      ) : (
-        <div className="quiz-anim" key={currentQuestion}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-            <span style={{ 
-              backgroundColor: 'rgba(99, 102, 241, 0.12)', 
-              color: '#818cf8', 
-              padding: '6px 14px', 
-              borderRadius: '20px', 
-              fontSize: '13px', 
-              fontWeight: '700' 
-            }}>
-              Вопрос {currentQuestion + 1} из {questions.length}
-            </span>
+      {/* Заголовок */}
+      <div style={{ textAlign: 'center', marginBottom: '52px', animation: 'quizUp 0.5s ease' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.15em', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '14px' }}>// Интерактивный тест</p>
+        <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, background: 'linear-gradient(135deg, #f0f4ff 40%, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          Проверь свои знания
+        </h2>
+      </div>
+
+      <div className="quiz-shell">
+        {showResult ? (() => {
+          const r = getResultData();
+          return (
+            <div style={{ textAlign: 'center', animation: 'quizUp 0.5s ease' }}>
+              <span className="result-emoji">{r.emoji}</span>
+              <h3 style={{ fontSize: '28px', fontWeight: 900, background: r.color, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '16px' }}>
+                {r.label}
+              </h3>
+              <div className="result-score">{score}/{questions.length}</div>
+              <p style={{ color: 'var(--text-mid)', marginTop: '16px', marginBottom: '8px', lineHeight: 1.6 }}>{r.msg}</p>
+
+              {/* Score bar */}
+              <div style={{ margin: '32px 0 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px', height: '8px', overflow: 'hidden' }}>
+                <div style={{
+                  width: `${(score / questions.length) * 100}%`, height: '100%',
+                  background: r.color, borderRadius: '10px',
+                  transition: 'width 1s cubic-bezier(0.16,1,0.3,1)',
+                  boxShadow: '0 0 12px rgba(124,58,237,0.5)',
+                }} />
+              </div>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-dim)' }}>
+                {Math.round((score / questions.length) * 100)}% правильных ответов
+              </p>
+
+              <button className="restart-btn" onClick={restartQuiz}>
+                Попробовать снова ↺
+              </button>
+            </div>
+          );
+        })() : (
+          <div key={currentQuestion} style={{ animation: 'quizUp 0.45s cubic-bezier(0.16,1,0.3,1)' }}>
+            <div className="quiz-progress-track">
+              <div className="quiz-progress-fill" style={{ width: `${progressPercent}%` }} />
+            </div>
+
+            <div className="quiz-q-num">
+              <span className="quiz-q-num-badge">Вопрос {currentQuestion + 1} из {questions.length}</span>
+              <span style={{ marginLeft: 'auto', color: 'var(--neon-green)', fontWeight: 700 }}>
+                ✓ {score} верных
+              </span>
+            </div>
+
+            <h3 className="quiz-question">{questions[currentQuestion].question}</h3>
+
+            <div style={{ marginBottom: answered ? '20px' : '32px' }}>
+              {questions[currentQuestion].options.map((option, index) => {
+                const isSelected = selectedOption === option;
+                const isCorrectOpt = option === questions[currentQuestion].answer;
+                let cls = 'option-row';
+                if (answered) {
+                  cls += ' opt-answered';
+                  if (isCorrectOpt) cls += ' opt-correct';
+                  else if (isSelected && !isCorrectOpt) cls += ' opt-wrong';
+                } else if (isSelected) {
+                  cls += ' opt-selected';
+                }
+
+                let letterBg = 'rgba(255,255,255,0.04)';
+                let letterColor = 'var(--text-dim)';
+                if (answered && isCorrectOpt) { letterBg = 'rgba(16,185,129,0.2)'; letterColor = '#86efac'; }
+                else if (answered && isSelected && !isCorrectOpt) { letterBg = 'rgba(239,68,68,0.2)'; letterColor = '#fca5a5'; }
+                else if (!answered && isSelected) { letterBg = 'rgba(124,58,237,0.2)'; letterColor = '#c4b5fd'; }
+
+                return (
+                  <div key={index} className={cls} onClick={() => handleOptionClick(option)}>
+                    <div className="option-letter" style={{ background: letterBg, color: letterColor, borderColor: 'transparent' }}>
+                      {OPTION_LETTERS[index]}
+                    </div>
+                    <span style={{ flex: 1 }}>{option}</span>
+                    {answered && isCorrectOpt && <span style={{ color: '#86efac', fontFamily: 'var(--font-mono)', fontSize: '13px' }}>✓</span>}
+                    {answered && isSelected && !isCorrectOpt && <span style={{ color: '#fca5a5', fontFamily: 'var(--font-mono)', fontSize: '13px' }}>✗</span>}
+                  </div>
+                );
+              })}
+            </div>
+
+            {answered && (
+              <div className="feedback-bar" style={{
+                background: isCorrect ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.07)',
+                border: `1px solid ${isCorrect ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.2)'}`,
+                color: isCorrect ? '#86efac' : '#fca5a5',
+              }}>
+                <span>{isCorrect ? '✓' : '✗'}</span>
+                <span>{isCorrect ? 'Верно! Отличная работа.' : `Правильный ответ: ${questions[currentQuestion].answer}`}</span>
+              </div>
+            )}
+
+            <button className="next-btn" onClick={handleNextClick} disabled={!answered}>
+              {currentQuestion + 1 === questions.length ? 'Посмотреть результат →' : 'Следующий вопрос →'}
+            </button>
           </div>
-
-          <div style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '10px', marginBottom: '30px', overflow: 'hidden' }}>
-            <div style={{ width: `${progressPercent}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #a855f7)', transition: 'width 0.4s ease' }}></div>
-          </div>
-
-          <h3 style={{ fontSize: '24px', fontWeight: '800', lineHeight: '1.4', marginBottom: '30px', color: '#ffffff', letterSpacing: '-0.5px' }}>
-            {questions[currentQuestion].question}
-          </h3>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '35px' }}>
-            {questions[currentQuestion].options.map((option, index) => {
-              const isSelected = selectedOption === option;
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleOptionClick(option)}
-                  className="option-btn"
-                  style={{
-                    border: isSelected ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.05)',
-                    backgroundColor: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(15, 23, 42, 0.3)',
-                    color: isSelected ? '#a5b4fc' : '#94a3b8',
-                    fontWeight: isSelected ? '700' : '500',
-                    boxShadow: isSelected ? '0 0 20px rgba(99, 102, 241, 0.15)' : 'none',
-                    outline: 'none'
-                  }}
-                >
-                  {option}
-                </button>
-              );
-            })}
-          </div>
-
-          <button
-            onClick={handleNextClick}
-            disabled={!selectedOption}
-            style={{
-              width: '100%',
-              padding: '16px',
-              borderRadius: '14px',
-              border: 'none',
-              backgroundColor: selectedOption ? '#6366f1' : 'rgba(255, 255, 255, 0.04)',
-              color: selectedOption ? 'white' : '#4b5563',
-              fontSize: '16px',
-              fontWeight: '700',
-              cursor: selectedOption ? 'pointer' : 'not-allowed',
-              boxShadow: selectedOption ? '0 6px 20px rgba(99, 102, 241, 0.3)' : 'none',
-              transition: 'all 0.3s'
-            }}
-          >
-            {currentQuestion + 1 === questions.length ? "Посмотреть результат" : "Следующий вопрос"}
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

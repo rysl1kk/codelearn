@@ -48,8 +48,7 @@ export default function Quiz() {
     setSelectedOption(null);
   };
 
-  // Вычисляем процент прохождения для анимации прогресс-бара
-  const progressPercent = ((currentQuestion) / questions.length) * 100;
+  const progressPercent = (currentQuestion / questions.length) * 100;
 
   return (
     <div style={{
@@ -72,9 +71,9 @@ export default function Quiz() {
         }
         .option-btn {
           text-align: left;
-          padding: '16px 20px';
-          border-radius: '14px';
-          font-size: '15px';
+          padding: 18px 22px;
+          border-radius: 14px;
+          font-size: 15px;
           cursor: pointer;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -108,7 +107,6 @@ export default function Quiz() {
         </div>
       ) : (
         <div className="quiz-anim" key={currentQuestion}>
-          {/* Верхняя панель с прогрессом */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
             <span style={{ 
               backgroundColor: 'rgba(99, 102, 241, 0.12)', 
@@ -122,7 +120,6 @@ export default function Quiz() {
             </span>
           </div>
 
-          {/* Интерактивная линия прогресса */}
           <div style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '10px', marginBottom: '30px', overflow: 'hidden' }}>
             <div style={{ width: `${progressPercent}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #a855f7)', transition: 'width 0.4s ease' }}></div>
           </div>
@@ -131,7 +128,6 @@ export default function Quiz() {
             {questions[currentQuestion].question}
           </h3>
 
-          {/* Варианты ответов */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '35px' }}>
             {questions[currentQuestion].options.map((option, index) => {
               const isSelected = selectedOption === option;
@@ -141,17 +137,12 @@ export default function Quiz() {
                   onClick={() => handleOptionClick(option)}
                   className="option-btn"
                   style={{
-                    textAlign: 'left',
-                    padding: '18px 22px',
-                    borderRadius: '14px',
                     border: isSelected ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.05)',
                     backgroundColor: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(15, 23, 42, 0.3)',
                     color: isSelected ? '#a5b4fc' : '#94a3b8',
-                    fontSize: '15px',
                     fontWeight: isSelected ? '700' : '500',
                     boxShadow: isSelected ? '0 0 20px rgba(99, 102, 241, 0.15)' : 'none',
-                    outline: 'none',
-                    transition: 'all 0.2s ease'
+                    outline: 'none'
                   }}
                 >
                   {option}
@@ -160,7 +151,6 @@ export default function Quiz() {
             })}
           </div>
 
-          {/* Кнопка Далее */}
           <button
             onClick={handleNextClick}
             disabled={!selectedOption}

@@ -24,7 +24,7 @@ export default function Courses() {
           border: 1px solid rgba(255, 255, 255, 0.04);
           backdrop-filter: blur(10px);
           flex-wrap: wrap;
-          gap: '15px';
+          gap: 15px;
           box-shadow: 0 4px 20px rgba(0,0,0,0.1);
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           animation: slideIn 0.5s ease-out forwards;
@@ -39,8 +39,8 @@ export default function Courses() {
         .course-btn {
           background-color: rgba(255, 255, 255, 0.04);
           border: 1px solid rgba(255, 255, 255, 0.08);
-          color: '#fff';
-          padding: '12px 24px';
+          color: #fff;
+          padding: 12px 24px;
           border-radius: 12px;
           font-weight: 600;
           cursor: pointer;
@@ -52,13 +52,13 @@ export default function Courses() {
         }
       `}</style>
 
-      <h2 style={{ fontSize: '32px', fontWeight: '850', marginBottom: '40px', textAlign: 'center', letterSpacing: '-0.5px' }}>Доступные направления</h2>
+      <h2 style={{ fontSize: '32px', fontWeight: '850', marginBottom: '40px', textAlign: 'center' }}>Доступные направления</h2>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
         {coursesList.map((course, index) => (
           <div key={index} className="course-item" style={{ animationDelay: course.delay }}>
             <div>
-              <span style={{ background: course.color, color: '#fff', padding: '5px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '800', uppercase: 'true', letterSpacing: '0.5px' }}>{course.level}</span>
+              <span style={{ background: course.color, color: '#fff', padding: '5px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: '800', letterSpacing: '0.5px' }}>{course.level}</span>
               <h3 style={{ margin: '12px 0 6px 0', fontSize: '22px', color: '#fff', fontWeight: '700' }}>{course.title}</h3>
               <p style={{ margin: 0, color: '#94a3b8', fontSize: '14px' }}>Продолжительность: {course.duration}</p>
             </div>

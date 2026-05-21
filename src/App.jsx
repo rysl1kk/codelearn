@@ -8,7 +8,6 @@ import Quiz from './pages/Quiz';
 function App() {
   return (
     <Router>
-      {/* Встраиваем CSS-стили для анимаций наведения, чтобы сайт ожил */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
@@ -46,13 +45,12 @@ function App() {
         flexDirection: 'column', 
         minHeight: '100vh', 
         fontFamily: '"Inter", "Segoe UI", sans-serif',
-        backgroundColor: '#070a13', // Еще более глубокий премиальный темный
+        backgroundColor: '#070a13', 
         color: '#f3f4f6',
         backgroundImage: 'radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 600px), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.12), transparent 600px)',
         overflowX: 'hidden'
       }}>
         
-        {/* АНИМИРОВАННАЯ ШАПКА */}
         <header style={{ 
           backdropFilter: 'blur(16px)',
           backgroundColor: 'rgba(7, 10, 19, 0.75)', 
@@ -66,7 +64,7 @@ function App() {
           zIndex: 1000,
           flexWrap: 'wrap',
           gap: '15px',
-          animation: 'fadeIn 0.6s ease out'
+          animation: 'fadeIn 0.6s ease-out'
         }}>
           <div style={{ 
             fontSize: '26px', 
@@ -87,11 +85,11 @@ function App() {
           </nav>
         </header>
 
-        {/* ОСНОВНОЙ КОНТЕНТ */}
+        {/* НАСТРОЕНО НА ПОЛНЫЙ ЭКРАН */}
         <main style={{ 
           flexGrow: 1, 
-          padding: '60px 20px', 
-          maxWidth: '1200px', 
+          padding: '40px 40px', 
+          maxWidth: '100%', 
           width: '100%', 
           margin: '0 auto',
           boxSizing: 'border-box'

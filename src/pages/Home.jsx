@@ -17,13 +17,12 @@ export default function Home() {
         .main-btn {
           background: linear-gradient(135deg, #6366f1, #a855f7);
           color: white;
-          border: 'none';
+          border: none;
           padding: 18px 40px;
           border-radius: 16px;
           font-size: 16px;
           font-weight: 700;
           cursor: pointer;
-          border: none;
           box-shadow: 0 0 0 rgba(99, 102, 241, 0);
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -52,7 +51,6 @@ export default function Home() {
       `}</style>
 
       <div className="animated-content">
-        {/* Большой красивый заголовок */}
         <h1 style={{ 
           fontSize: '56px', 
           fontWeight: '900', 
@@ -67,16 +65,14 @@ export default function Home() {
           <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>в новом формате</span>
         </h1>
         
-        <p style={{ fontSize: '19px', color: '#94a3b8', maxWidth: '640px', margin: '0 auto 48px auto', lineHeight: '1.6', fontWeight: '400' }}>
+        <p style={{ fontSize: '19px', color: '#94a3b8', maxWidth: '640px', margin: '0 auto 48px auto', lineHeight: '1.6' }}>
           Интерактивная среда программирования. Забудь про скучные лекции — проходи динамические квизы и отслеживай свой прогресс в реальном времени.
         </p>
 
-        {/* Кнопка с эффектом взлёта */}
         <button onClick={() => navigate('/quiz')} className="main-btn">
           Начать обучение 🚀
         </button>
 
-        {/* Интерактивные анимированные карточки */}
         <div style={{ display: 'flex', gap: '25px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '90px' }}>
           <div className="feature-card">
             <div style={{ fontSize: '32px', marginBottom: '15px', filter: 'drop-shadow(0 4px 12px rgba(99,102,241,0.3))' }}>⚡</div>
